@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes Sharing Website</title>
+
+    <!-- Linking external stylesheets -->
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  </head>
+
+  <body class="hero-section">
+    <!-- Particles background -->
+    <div id="particles-js"></div>
+
+    <!-- Top bar with user welcome and logout -->
+    <div class="container mt-3 text-end">
+      <span id="welcomeUser" class="me-3"></span>
+      <button class="btn btn-sm btn-outline-danger" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main container -->
+    <div class="container mt-5">
+      <h1 class="text-center mb-4">
+        <i class="bi bi-journal-text me-2 text-primary"></i>Notes Sharing Platform
+      </h1>
+
+      <!-- Upload form card -->
+      <div class="text-center">
+        <div class="card p-4 mt-4 shadow-lg">
+          <h4 class="mb-3">Upload Your Notes</h4>
+          <form id="uploadForm" onsubmit="handleUpload(event)">
+            <!-- Title input -->
+            <div class="mb-3">
+              <label for="title" class="form-label">Title of Notes</label>
+              <input type="text" class="form-control" id="title" placeholder="Enter note title" required />
+            </div>
+
+            <!-- Subject input -->
+            <div class="mb-3">
+              <label for="subject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="subject" placeholder="Enter subject name" required />
+            </div>
+
+            <!-- File input -->
+            <div class="mb-3">
+              <label for="file" class="form-label">Upload File</label>
+              <input type="file" class="form-control" id="file" required />
+            </div>
+
+            <!-- Price input -->
+            <div class="mb-3">
+              <label for="price" class="form-label">Price (\u20B9 or type "free")</label>
+              <input type="text" class="form-control" id="price" placeholder="e.g. 50 or free" required />
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+
+        <!-- Notes list -->
+        <div class="card p-4 mt-5">
+          <h4 class="mb-3">Available Notes</h4>
+
+          <!-- Filter buttons -->
+          <div class="mb-3">
+            <button class="btn btn-secondary btn-sm me-2" onclick="filterNotes('all')">All</button>
+            <button class="btn btn-success btn-sm me-2" onclick="filterNotes('free')">Free</button>
+            <button class="btn btn-warning btn-sm me-2" onclick="filterNotes('paid')">Paid</button>
+            <button class="btn btn-danger btn-sm" onclick="filterNotes('high')">\u20B9100 and Above</button>
+          </div>
+
+          <!-- Container for dynamically loaded note cards -->
+          <div class="row g-3" id="notesContainer"></div>
+        </div>
+
+        <!-- Browse notes button -->
+        <button class="btn btn-success mt-3">Browse Notes</button>
+      </div>
+    </div>
+
+    <!-- Preview modal for viewing PDFs -->
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="previewModalLabel">Note Preview</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <embed id="pdfPreview" src="" width="100%" height="400px" type="application/pdf" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat modal for bargaining -->
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="chatModalLabel">Bargain with Seller</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="chatBox" class="mb-3 chat-box"></div>
+            <div class="input-group">
+              <input type="text" id="chatInput" class="form-control" placeholder="Type your message..." />
+              <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap and particles.js scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+      // Load particles background
+      particlesJS.load("particles-js", "particlesjs-config.json", function () {
+        console.log("Particles.js config loaded successfully");
+      });
+    </script>
+
+    <!-- Firebase setup and user state check -->
+    <script type="module">
+      import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCJXAeatYBRRgs-GMTVGervg4yh6oavJjg",
+        authDomain: "notes-sharing-app-284e7.firebaseapp.com",
+        projectId: "notes-sharing-app-284e7",
+        storageBucket: "notes-sharing-app-284e7.appspot.com",
+        messagingSenderId: "127599616794",
+        appId: "1:127599616794:web:dbb660ec5f6332a92f82a3",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Handle authenticated user
+      const welcomeUser = document.getElementById("welcomeUser");
+      if (welcomeUser) {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            welcomeUser.innerText = `Welcome, ${user.email}`;
+          } else {
+            window.location.href = "login.html"; // redirect if not logged in
+          }
+        });
+
+        // Logout function
+        window.logout = function () {
+          signOut(auth).then(() => {
+            alert("Logged out successfully!");
+            window.location.href = "login.html";
+          });
+        };
+      }
+    </script>
+
+    <!-- Custom JS logic (uploading, listing, filtering, etc.) -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

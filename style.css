@@ -1,0 +1,162 @@
+body {
+  font-family: "Poppins", sans-serif;
+  
+  color: #000000;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body.hero-section {
+  background: rgba(60, 128, 105, 0.751);
+  body.hero-section {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  color: rgb(255, 255, 255);
+}
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: transparent;
+}
+
+
+/* Glassy Card Style */
+.card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+}
+
+/* Form Controls (Glass look) */
+.card-body,
+.card-title,
+.card p,
+label.form-label {
+  color: #000000;
+}
+
+.card .form-control {
+  color: #000000;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.card .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* Buttons Modern Style */
+/* Buttons Look Rounded & Modern */
+.btn {
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+}
+
+/* Upload Button More Stylish */
+button[type="submit"].btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border: none;
+}
+
+/* Browse Notes Button Green Stylish */
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #218838);
+  border: none;
+}
+
+/* Container spacing and look */
+.container {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+
+
+.chat-box {
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  padding: 10px;
+}
+
+#pdfPreview {
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.modal-header,
+.modal-body {
+  border: none;
+}
+
+
+
+/* Responsive text scaling */
+@media (max-width: 768px) {
+  h1,
+  h2,
+  h4 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .container {
+    padding: 15px;
+  }
+}
+
+/* Optional: Override file input color */
+input[type="file"]::file-selector-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
